@@ -25,11 +25,18 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Install Android platform
+      - name: Use hosted Android SDK
         run: |
-          sdkmanager --install 'platform-tools' 'platforms;android-37' 'build-tools;37.0.0'
+          set -e
+          test -d "$ANDROID_HOME"
+          SDKMGR="$(command -v sdkmanager || true)"
+          if [ -z "$SDKMGR" ]; then
+            SDKMGR="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
+          fi
+          test -x "$SDKMGR"
+          echo "Using SDK manager: $SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null || true
+          "$SDKMGR" --install 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
       - name: Install JavaScript packages
         run: npm install --no-audit --no-fund
       - name: Test training logic
