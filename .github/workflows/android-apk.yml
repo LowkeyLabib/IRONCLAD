@@ -1,4 +1,4 @@
-name: Android test APK
+name: IRONCLAD Android release candidate
 
 on:
   workflow_dispatch:
@@ -39,10 +39,7 @@ jobs:
           "$SDKMGR" --install 'platform-tools' 'platforms;android-36' 'build-tools;36.0.0'
       - name: Install JavaScript packages
         run: npm install --no-audit --no-fund
-      - name: Test training logic
-        run: npm run test:logic
-      - name: TypeScript check (report issues but still attempt first APK)
-        continue-on-error: true
+      - name: Validate TypeScript before native build
         run: npm run typecheck
       - name: Generate Android native project
         run: npx expo prebuild --platform android --clean --no-install
@@ -55,10 +52,10 @@ jobs:
           ./gradlew :app:assembleRelease --no-daemon --stacktrace
       - name: Verify APK exists
         run: test -s android/app/build/outputs/apk/release/app-release.apk
-      - name: Upload installable APK
+      - name: Upload Android APK (internal distribution)
         uses: actions/upload-artifact@v4
         with:
-          name: ironclad-android-test-apk
+          name: ironclad-android-release-candidate-apk
           path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30

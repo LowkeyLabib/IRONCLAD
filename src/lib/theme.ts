@@ -1,6 +1,7 @@
 export const C = {
- bg:'#0B0D10', surface:'#15191E', raised:'#1D2229', border:'#283039',
- text:'#F4F5F7', muted:'#9299A3', accent:'#C8F36B', green:'#62C49B', amber:'#D8AE64', red:'#E98686',
+ bg:'#14213D', surface:'#1C2C4C', raised:'#273A5C', border:'#354765',
+ text:'#F4EDE0', muted:'#AFB8C9', accent:'#FF6B5B', paper:'#F4EDE0', navy:'#14213D', coral:'#FF6B5B',
+ green:'#6AD1AB', amber:'#E7B66B', red:'#FF8178',
 };
 export const pad = 18;
 export const kgToLb = (kg:number)=>kg*2.20462262;

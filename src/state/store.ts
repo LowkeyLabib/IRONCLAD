@@ -10,7 +10,7 @@ interface State {
  ready:boolean; error?:string; profile:Profile; prefs:Preferences; routines:Routine[]; catalog:Exercise[]; sessions:Session[]; body:BodyEntry[]; photos:PhotoEntry[];
  boot:()=>Promise<void>; refresh:()=>Promise<void>;
  updateProfile:(patch:Partial<Profile>)=>Promise<void>; updatePrefs:(patch:Partial<Preferences>)=>Promise<void>;
- activateRoutine:(id:string)=>Promise<void>; makeRoutine:(r:Routine)=>Promise<void>; cloneRoutine:(r:Routine)=>Promise<string>; removeRoutine:(id:string)=>Promise<void>; customExercise:(e:Exercise)=>Promise<void>;
+ activateRoutine:(id:string)=>Promise<void>; makeRoutine:(r:Routine)=>Promise<void>; createBlankRoutine:(schedule?:number[])=>Promise<string>; cloneRoutine:(r:Routine)=>Promise<string>; removeRoutine:(id:string)=>Promise<void>; customExercise:(e:Exercise)=>Promise<void>;
  startWorkout:(r:Routine,day:number)=>Promise<string>; finishWorkout:(id:string,notes:string)=>Promise<void>; discardWorkout:(id:string)=>Promise<void>;
  addSet:(sessionId:string,entryId:string,set:Omit<SetLog,'id'|'sessionId'|'exerciseEntryId'|'doneAt'>)=>Promise<void>;
  editSet:(id:string,patch:Pick<SetLog,'reps'|'seconds'|'weight'|'rir'|'kind'>)=>Promise<void>; removeSet:(id:string)=>Promise<void>;
@@ -27,6 +27,12 @@ export const useApp=create<State>((set,get)=>({
  updatePrefs:async patch=>{const p={...get().prefs,...patch};await repo.savePrefs(p);set({prefs:p});if(['notifications','workoutReminder','weighReminder','weeklySummary','missedReminder','reminderHour','reminderMinute','quietFrom','quietUntil','sound','activeRoutineId'].some(k=>k in patch))try{await scheduleReminders(p,get().routines.find(r=>r.id===p.activeRoutineId)?.schedule);}catch{}},
  activateRoutine:async id=>{await get().updatePrefs({activeRoutineId:id});},
  makeRoutine:async r=>{if(r.preset)throw new Error('Duplicate a preset to edit it');await repo.saveRoutine(r);await get().refresh();},
+ createBlankRoutine:async(schedule=[1])=>{
+  const id=uuid();
+  const fresh:Routine={id,name:'Custom',subtitle:'Built from scratch · Your training, your rules',
+   preset:false,schedule:[...schedule],days:[{id:uuid(),name:'Workout 1',duration:'Flexible',exercises:[]}]};
+  await repo.saveRoutine(fresh);await get().refresh();return id;
+ },
  cloneRoutine:async r=>{const clone=duplicateRoutine(r,uuid());await repo.saveRoutine(clone);await get().refresh();return clone.id;},
  removeRoutine:async id=>{await repo.deleteRoutine(id);if(get().prefs.activeRoutineId===id)await get().activateRoutine('labib-ul');await get().refresh();},
  customExercise:async e=>{await repo.addExercise(e);await get().refresh();},

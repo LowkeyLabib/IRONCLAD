@@ -131,3 +131,40 @@ No `.apk` or `.ipa` was produced in the session. Do not rename the source ZIP as
 5. Add app icon and store screenshots before store submission. Publish or push only with explicit approval.
 
 The project contains **source code, not a prebuilt APK**.
+
+
+## IRONCLAD 1.1 — Navy / Cream / Coral update
+
+- Brand palette: Navy `#14213D`, Cream `#F4EDE0`, Coral `#FF6B5B`.
+- Branded native launch screen plus a short animated IRONCLAD introduction; bottom credit: **Developed by LowkeyLabib**.
+- Refreshed cards, responsive spacing, raised navigation, and spring-feedback buttons using Reanimated.
+- **Custom** routine starts from scratch: create it under Training, then choose days, exercise order, reps, loads, rest and schedule. Original built-in presets are never modified.
+- Exercise movement references: a looping two-pose demo for the built-in catalog, displayed with online images from **RepDB's licensed free-tier illustrations**. Includes a fallback and a Google Images GIF-search link. These are *not* third-party GIF downloads, because Google image search does not provide a reuse license. Internet is required to view illustrations.
+- External illustration credit: [Exercise data by RepDB (repdb.co)](https://repdb.co). Free in-app use requires attribution; do not redistribute their media as a raw dataset.
+- New Android and iOS icons are generated consistently by `npm install` using `scripts/generate-brand-assets.cjs`; no paid design service required.
+
+## Release builds
+
+**Android installable APK:** Push to `main`; open Actions → *IRONCLAD Android release candidate*. After a successful workflow run, download the `ironclad-android-release-candidate-apk` artifact and extract `app-release.apk`. It is an internal installation build and not automatically Google Play signed.
+
+**Android Play Store:** Connect Expo EAS, configure production Android signing, then run:
+
+```sh
+npx eas-cli login
+npx eas-cli init
+npx eas-cli build --platform android --profile production
+```
+
+This produces a signed store-oriented Android App Bundle after EAS signing is configured. Keep signing credentials private.
+
+**iOS:** This same Expo codebase includes the iOS bundle ID, icons, splash screen, modules, and a production EAS profile. To make a real TestFlight/App Store build, obtain an Apple Developer membership, configure iOS certificates/provisioning, and connect EAS:
+
+```sh
+npx eas-cli login
+npx eas-cli init
+npx eas-cli build --platform ios --profile production
+```
+
+An optional manual GitHub workflow, `.github/workflows/ios-eas-production.yml`, requests an iOS EAS build once your Expo project, EAS credentials, Apple signing and the `EXPO_TOKEN` repository secret are ready. Never commit credentials.
+
+**Release transparency:** This update was requested as a single production-oriented pass without an additional device QA cycle. Successful CI compilation alone does not verify rendering, image delivery, backup behavior, install continuity, or compliance with App Store/Play Store review. Do not market the resulting artifact as store-approved until it is signed and validated. Back up IRONCLAD workout data before uninstalling or overwriting a different signing-key build.
