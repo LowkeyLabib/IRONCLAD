@@ -23,7 +23,7 @@ export default function Root(){
   else if(profile.onboardingDone&&first==='onboarding')router.replace('/(tabs)');
  },[ready,profile.onboardingDone,segments,router]);
  return <View style={{flex:1,backgroundColor:C.bg}}>
-  <StatusBar style="light" backgroundColor={C.bg}/>
+  <StatusBar style="light"/>
   <Stack screenOptions={{headerShown:false,contentStyle:{backgroundColor:C.bg},animation:'slide_from_right'}}>
    <Stack.Screen name="(tabs)"/><Stack.Screen name="onboarding"/><Stack.Screen name="workout"/>
    <Stack.Screen name="routine/[id]"/><Stack.Screen name="exercise/[id]"/>
