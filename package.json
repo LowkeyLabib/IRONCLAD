@@ -1,0 +1,45 @@
+{
+  "name": "ironclad",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "typecheck": "tsc --noEmit",
+    "test:logic": "node --test tests/*.test.cjs",
+    "doctor": "expo install --check",
+    "build:android:apk": "eas build --platform android --profile preview",
+    "build:ios:simulator": "eas build --platform ios --profile ios-simulator",
+    "build:ios:preview": "eas build --platform ios --profile preview",
+    "check:project": "node tests/project.test.cjs"
+  },
+  "dependencies": {
+    "expo": "~58.0.23",
+    "expo-router": "~58.0.31",
+    "expo-sqlite": "~58.0.16",
+    "expo-notifications": "~58.1.9",
+    "expo-file-system": "~58.0.13",
+    "expo-document-picker": "~58.0.5",
+    "expo-sharing": "~58.0.23",
+    "expo-image-picker": "~58.0.10",
+    "expo-haptics": "~58.0.8",
+    "expo-constants": "~58.0.16",
+    "expo-status-bar": "~58.0.5",
+    "expo-linking": "~58.0.17",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.0",
+    "react-native-svg": "15.16.0",
+    "react-native-reanimated": "~4.7.1",
+    "react-native-worklets": "0.13.0",
+    "lucide-react-native": "^0.468.0",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.2",
+    "@types/react": "~19.3.0"
+  }
+}

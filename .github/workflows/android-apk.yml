@@ -1,0 +1,56 @@
+name: Android test APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Build standalone APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: |
+          sdkmanager --install 'platform-tools' 'platforms;android-37' 'build-tools;37.0.0'
+      - name: Install JavaScript packages
+        run: npm install --no-audit --no-fund
+      - name: Test training logic
+        run: npm run test:logic
+      - name: TypeScript check
+        run: npm run typecheck
+      - name: Generate Android native project
+        run: npx expo prebuild --platform android --clean --no-install
+        env:
+          CI: '1'
+      - name: Compile standalone release APK
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+      - name: Verify APK exists
+        run: test -s android/app/build/outputs/apk/release/app-release.apk
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ironclad-android-test-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
